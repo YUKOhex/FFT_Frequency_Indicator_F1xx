@@ -22,6 +22,7 @@
 #include "stm32f1xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -46,7 +47,7 @@
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN PFP */
-
+extern void DMA_IRQHandler (void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -208,7 +209,7 @@ void DMA1_Channel1_IRQHandler(void)
   /* USER CODE END DMA1_Channel1_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_adc1);
   /* USER CODE BEGIN DMA1_Channel1_IRQn 1 */
-
+  DMA_IRQHandler();
   /* USER CODE END DMA1_Channel1_IRQn 1 */
 }
 
