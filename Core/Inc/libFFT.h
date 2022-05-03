@@ -6,8 +6,8 @@
 
 //#define DEBUG_FFT
 
-#define FFT_1024_NPT
-//#define FFT_256_NPT
+//#define FFT_1024_NPT
+#define FFT_256_NPT
 //#define FFT_64_NPT
 
 #ifdef FFT_1024_NPT
@@ -29,6 +29,22 @@ typedef struct {
 	bool UpdateMagFlag;
 } FFT_InitStruct;
 
+typedef struct {
+	uint16_t Hz500, Hz1000, Hz1500;
+}FrequencyStruct;
+
+typedef struct {
+	uint16_t frequency;
+	uint32_t Magnitude;
+}SearchSinusStruct;
+
+
+#ifdef DEBUG_FFT
+typedef struct {
+	uint32_t magnitude;
+	uint16_t frequency;
+}MagParametrStruct;
+#endif
 extern void libFFT_Init (void);
 extern void libFFT_main (FFT_InitStruct *data);
 extern FFT_InitStruct FFT_data;
