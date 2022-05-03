@@ -26,6 +26,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "libADC.h"
+#include "libFFT.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -92,6 +93,7 @@ int main(void)
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
   libADCInit();
+  libFFT_Init();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -99,6 +101,7 @@ int main(void)
   while (1)
   {
 	  libADCMain();
+	libFFT_main (&FFT_data);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

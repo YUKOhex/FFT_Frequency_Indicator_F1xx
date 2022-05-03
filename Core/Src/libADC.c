@@ -3,22 +3,24 @@
 #include "tim.h"
 #include "dma.h"
 #include "libFFT.h"
-
+#include "string.h"
 bool DMAflag = false; //
-
+uint16_t ADCDMABuff [NPT];
 void libADCInit (void) {
-#ifdef __LIBFFT_H__
-	libFFT_Init();
-#endif
 	HAL_TIM_Base_Start(&HTIM);
-	HAL_ADC_Start_DMA(&HADC,(uint32_t*) &FFT_data.InArray, NPT * 2);
+	HAL_ADC_Start_DMA(&HADC,(uint32_t*) &ADCDMABuff, NPT*2);
 }
 
 void libADCMain (void){
 	if (DMAflag == true){
-		libFFT_main (&FFT_data);
-		HAL_ADC_Start_DMA(&HADC,(uint32_t*) &FFT_data.InArray, NPT*2);
-		DMAflag = false;
+		if (FFT_data.UpdateFlag == false){
+			for (uint16_t i = 0; i < NPT; i++)
+				FFT_data.InArray [i] = ADCDMABuff [i];
+
+			HAL_ADC_Start_DMA(&HADC,(uint32_t*) &ADCDMABuff, NPT*2);
+			DMAflag = false;
+			FFT_data.UpdateFlag = true;
+		}
 	}
 
 }
