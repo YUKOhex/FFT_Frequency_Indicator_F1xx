@@ -27,6 +27,7 @@
 /* USER CODE BEGIN Includes */
 #include "libADC.h"
 #include "libFFT.h"
+#include "libPWM.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -91,17 +92,19 @@ int main(void)
   MX_DMA_Init();
   MX_ADC1_Init();
   MX_TIM3_Init();
+  MX_TIM4_Init();
   /* USER CODE BEGIN 2 */
   libADCInit();
-  libFFT_Init();
+  libFFTInit();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  libADCMain();
-	libFFT_main (&FFT_data);
+	libADCMain();
+	libFFTmain (&FFT_data);
+	libPWMmain();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

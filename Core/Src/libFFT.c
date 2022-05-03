@@ -18,14 +18,14 @@ FrequencyStruct DataFrequencyDetermanition;
 static inline void CalcPowerMag(FFT_InitStruct *data);
 static void FrequencyDetermination (uint32_t *data, FrequencyStruct *DataFrequency);
 
-void libFFT_Init (void) {
+void libFFTInit (void) {
 	FFT_data.UpdateFlag = false;
 	DataFrequencyDetermanition.Hz500 = 0;
 	DataFrequencyDetermanition.Hz1000 = 0;
 	DataFrequencyDetermanition.cycleCounter = 0;
 }
 
-void libFFT_main (FFT_InitStruct *data) {
+void libFFTmain (FFT_InitStruct *data) {
 	if (data->UpdateFlag == true){
 		#if NPT == 1024
 			cr4_fft_1024_stm32(data->OutArray, data->InArray, NPT);

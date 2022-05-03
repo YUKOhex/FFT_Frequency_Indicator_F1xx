@@ -22,8 +22,8 @@
 	}PositioinFrequencyEnum;
 
 	typedef enum {
-		Detect500Hz = 50,//85U,
-		Detect1000Hz = 45//55U
+		Detect500Hz = 50,
+		Detect1000Hz = 45
 	}FrequencyDetectionLevelEnum;
 
 #endif
@@ -53,8 +53,8 @@ typedef struct {
 	uint32_t Magnitude;
 }SearchSinusStruct;
 #endif
-extern void libFFT_Init (void);
-extern void libFFT_main (FFT_InitStruct *data);
+extern void libFFTInit (void);
+extern void libFFTmain (FFT_InitStruct *data);
 extern FFT_InitStruct FFT_data;
 
 #endif

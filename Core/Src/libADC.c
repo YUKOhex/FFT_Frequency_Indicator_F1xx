@@ -16,7 +16,6 @@ void libADCMain (void){
 		if (FFT_data.UpdateFlag == false){
 			for (uint16_t i = 0; i < NPT; i++)
 				FFT_data.InArray [i] = ADCDMABuff [i];
-
 			HAL_ADC_Start_DMA(&HADC,(uint32_t*) &ADCDMABuff, NPT*2);
 			DMAflag = false;
 			FFT_data.UpdateFlag = true;
