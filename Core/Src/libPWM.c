@@ -1,75 +1,76 @@
 #include "libPWM.h"
 #include "libFFT.h"
 
-extern FrequencyStruct DataFrequencyDetermanition;
-static void LedSignal (PeriodSettingsEnum Period);
+static bool FlagPeriodElapsed = false;
+static bool PulseFinished = false;
+static bool FlagOffTimer = true;
+
+static PeriodSettings FrequencyParser (FrequencyStruct * frequency);
+static void PWMTimerSetup (PeriodSettings settings);
+static void PeriodElapsedHandler (void);
 
 void PWMStart (void) {
 	HAL_TIM_Base_Start_IT(&PWM_HTIM);
-	 HAL_TIM_PWM_Start_IT(&htim4, TIM_CHANNEL_4);
+	HAL_TIM_PWM_Start_IT(&PWM_HTIM, PWM_CHANEL);
 }
-/*
-void PWMStop (void) {
 
-}
-*/
-uint16_t j = 0;
-bool flag = true;
-bool StopFlag = true;
-uint8_t finish = 1;
-bool onFlag = false, offFlag = true;
 void libPWMmain (void) {
-	PeriodSettingsEnum Period = tZero;
-	if (DataFrequencyDetermanition.Hz500 > 5)
-		Period = t200ms;
-	if (DataFrequencyDetermanition.Hz1000 > 5)
-		Period = t1000ms;
-
-	if ((DataFrequencyDetermanition.Hz1000 > 5) && (DataFrequencyDetermanition.Hz500 > 5)){
-		Period = t550ms;
+	PeriodElapsedHandler ();
+	PeriodSettings LedSettings = FrequencyParser (&FrequencyDetectorData);
+	if (FlagOffTimer == true && LedSettings != tZero){
+		PWMTimerSetup (LedSettings);
+		PWMStart();
 	}
-	if (offFlag == true && Period != tZero){
-		offFlag = false;
-		onFlag = false;
-	LedSignal (Period);
-	DataFrequencyDetermanition.Hz1000 = 0;
-	DataFrequencyDetermanition.Hz500 = 0;
-	}
-
-
+	MeasurementsClear(&FrequencyDetectorData);
 }
 
+static PeriodSettings FrequencyParser (FrequencyStruct * frequency) {
+	const uint16_t frequencyDetectionThreshold = 1;
+	PeriodSettings parser = tZero;
+	if ((frequency->Hz1000 >= frequencyDetectionThreshold) && (frequency->Hz500 >= frequencyDetectionThreshold))
+		parser = t550ms_F500_F1000;
+	else if (frequency->Hz1000 >= frequencyDetectionThreshold)
+		parser = t1000ms_F1000;
+	else if (frequency->Hz500 >= frequencyDetectionThreshold)
+		parser = t200ms_F500;
+	return parser;
+}
 
-static void LedSignal (PeriodSettingsEnum Period){ // milliseconds
-
-	switch (Period) {
-		case t200ms:
-			__HAL_TIM_SET_AUTORELOAD (&PWM_HTIM, t200ms);
-			__HAL_TIM_SET_COMPARE (&PWM_HTIM, PWM_CHANEL, tPulse100ms);
+static void PWMTimerSetup (PeriodSettings settings){
+	switch (settings) {
+		case t200ms_F500:
+			__HAL_TIM_SET_AUTORELOAD (&PWM_HTIM, t200ms_F500);
+			__HAL_TIM_SET_COMPARE (&PWM_HTIM, PWM_CHANEL, t200ms_Pulse100ms);
 			break;
 
-		case t1000ms:
-			__HAL_TIM_SET_AUTORELOAD (&PWM_HTIM, t1000ms);
-			__HAL_TIM_SET_COMPARE (&PWM_HTIM, PWM_CHANEL, tPulse500ms);
+		case t1000ms_F1000:
+			__HAL_TIM_SET_AUTORELOAD (&PWM_HTIM, t1000ms_F1000);
+			__HAL_TIM_SET_COMPARE (&PWM_HTIM, PWM_CHANEL, t1000ms_Pulse500ms);
 			break;
-		case t550ms:
-			__HAL_TIM_SET_AUTORELOAD (&PWM_HTIM, t550ms);
-			__HAL_TIM_SET_COMPARE (&PWM_HTIM, PWM_CHANEL, tPulse550ms);
+		case t550ms_F500_F1000:
+			__HAL_TIM_SET_AUTORELOAD (&PWM_HTIM, t550ms_F500_F1000);
+			__HAL_TIM_SET_COMPARE (&PWM_HTIM, PWM_CHANEL, t550ms_Pulse50ms);
 			break;
 		default:
 			break;
 	}
-	PWMStart();
+}
+
+static void PeriodElapsedHandler (void) {
+	if (FlagPeriodElapsed == true){
+		HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_SET);
+		if (PulseFinished == true) {
+			HAL_TIM_PWM_Stop_IT(&PWM_HTIM, PWM_CHANEL);
+			HAL_TIM_Base_Stop_IT(&PWM_HTIM);
+			FlagOffTimer = true;
+			FlagPeriodElapsed = false;
+		}
+	}
 }
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 	if (htim->Instance == PWM_HTIM.Instance){
-		HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_SET);
-		if (onFlag == true) {
-			HAL_TIM_Base_Stop_IT(htim);
-			HAL_TIM_PWM_Stop_IT(htim, PWM_CHANEL);
-			offFlag = true;
-		}
+		FlagPeriodElapsed = true;
 	}
 
 }
@@ -77,7 +78,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 void HAL_TIM_PWM_PulseFinishedCallback (TIM_HandleTypeDef *htim){
 	if (htim->Instance == PWM_HTIM.Instance){
 		HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_RESET);
-		onFlag = true;
+		PulseFinished = true;
 	}
 }
-

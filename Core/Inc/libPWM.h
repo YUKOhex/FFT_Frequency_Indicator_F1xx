@@ -9,19 +9,18 @@
 #define PWM_CHANEL TIM_CHANNEL_4
 
 typedef enum {
-	t200ms = 11999U,
-	t1000ms = 59999U,
-	t550ms = 32999U,
+	t200ms_F500 = 11999U,
+	t1000ms_F1000 = 59999U,
+	t550ms_F500_F1000 = 32999U,
 	tZero = 0U
-}PeriodSettingsEnum;
+}PeriodSettings;
 
-typedef enum {
-	tPulse100ms = 5999U,
-	tPulse500ms = 29999U,
-	tPulse550ms = 2999U
-}PulseSettingsEnum;
+ enum PulseSettingsEnum {
+	 t200ms_Pulse100ms = 5999U,
+	 t1000ms_Pulse500ms = 29999U,
+	 t550ms_Pulse50ms = 2999U
+};
 
-void libPWMInit (void);
 void libPWMmain (void);
 
 #endif

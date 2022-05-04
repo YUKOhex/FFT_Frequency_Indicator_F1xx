@@ -3,7 +3,7 @@
 #include "math.h"
 
 FFT_InitStruct FFT_data;
-FrequencyStruct DataFrequencyDetermanition;
+FrequencyStruct FrequencyDetectorData;
 
 #ifdef DEBUG_FFT
 	SearchSinusStruct foundSinusMax;
@@ -13,16 +13,15 @@ FrequencyStruct DataFrequencyDetermanition;
 	static inline void For_FFT_SignalSimulation(int32_t *arr, float Fd);
 	static void SinusSignalParametr (FFT_InitStruct *data);
 	static SearchSinusStruct SearchSinusMaxMagnitude (uint32_t *data);
+	static void Norm (uint32_t *data);
 #endif
 
 static inline void CalcPowerMag(FFT_InitStruct *data);
-static void FrequencyDetermination (uint32_t *data, FrequencyStruct *DataFrequency);
+static void FrequencyDetector (uint32_t *data, FrequencyStruct *Frequency);
 
 void libFFTInit (void) {
 	FFT_data.UpdateFlag = false;
-	DataFrequencyDetermanition.Hz500 = 0;
-	DataFrequencyDetermanition.Hz1000 = 0;
-	DataFrequencyDetermanition.cycleCounter = 0;
+	MeasurementsClear(&FrequencyDetectorData);
 }
 
 void libFFTmain (FFT_InitStruct *data) {
@@ -35,7 +34,7 @@ void libFFTmain (FFT_InitStruct *data) {
 			cr4_fft_64_stm32(data->OutArray, data->InArray, NPT);
 		#endif
 		CalcPowerMag (data);
-		FrequencyDetermination (data->MagArray, &DataFrequencyDetermanition);
+		FrequencyDetector (data->MagArray, &FrequencyDetectorData);
 		data->UpdateFlag = false;
 	}
 }
@@ -56,14 +55,23 @@ static inline void CalcPowerMag(FFT_InitStruct *data) {
    }
 }
 
-static void FrequencyDetermination (uint32_t *data, FrequencyStruct *DataFrequency) {
+static void FrequencyDetector (uint32_t *data, FrequencyStruct *Frequency) {
 	if (data [position500Hz] > Detect500Hz)
-		DataFrequency->Hz500++;
+		Frequency->Hz500++;
 	if (data [position1000Hz] > Detect1000Hz)
-		DataFrequency->Hz1000++;
+		Frequency->Hz1000++;
+#ifdef DEBUG_FFT
 	DataFrequency->cycleCounter++;
+#endif
 }
 
+void MeasurementsClear (FrequencyStruct *DataFrequency){
+	DataFrequency->Hz500 = 0;
+	DataFrequency->Hz1000 = 0;
+#ifdef DEBUG_FFT
+	DataFrequency->cycleCounter = 0;
+#endif
+}
 
 #ifdef DEBUG_FFT
 static inline void For_FFT_SignalSimulation(int32_t *arr, float Fd)
@@ -103,7 +111,7 @@ static void Norm (uint32_t *data) {
 		}
 	}
 	for (i  = startFrequency; i < finishFrequency; i++) {
-		data[i] =  (data[i] * MaxNormMag) / max ;
+		data[i] =  (data[i] * 1000) / max ;
 	}
 }
 

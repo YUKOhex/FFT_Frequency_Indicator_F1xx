@@ -16,16 +16,15 @@
 
 #ifdef FFT_256_NPT
 	#define NPT 256
-	typedef enum {
+	enum PositioinFrequency{
 		position500Hz = 16U,
 		position1000Hz = 32U
-	}PositioinFrequencyEnum;
+	};
 
-	typedef enum {
-		Detect500Hz = 50,
-		Detect1000Hz = 45
-	}FrequencyDetectionLevelEnum;
-
+	enum FrequencyDetectionLevel {
+		Detect500Hz = 50U,
+		Detect1000Hz = 45U
+	};
 #endif
 
 #ifdef FFT_64_NPT
@@ -41,11 +40,10 @@ typedef struct {
 
 typedef struct {
 	uint32_t Hz500, Hz1000;
+#ifdef DEBUG_FFT
 	uint32_t cycleCounter;
+#endif
 }FrequencyStruct;
-
-
-
 
 #ifdef DEBUG_FFT
 typedef struct {
@@ -53,9 +51,12 @@ typedef struct {
 	uint32_t Magnitude;
 }SearchSinusStruct;
 #endif
+
+extern FFT_InitStruct FFT_data;
+extern FrequencyStruct FrequencyDetectorData;
 extern void libFFTInit (void);
 extern void libFFTmain (FFT_InitStruct *data);
-extern FFT_InitStruct FFT_data;
+void MeasurementsClear (FrequencyStruct *DataFrequency);
 
 #endif
 
