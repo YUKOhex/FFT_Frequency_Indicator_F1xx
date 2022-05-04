@@ -10,14 +10,15 @@
 
 typedef enum {
 	t200ms = 11999U,
-	t1000ms = 59999,
-	t550ms = 32999U
+	t1000ms = 59999U,
+	t550ms = 32999U,
+	tZero = 0U
 }PeriodSettingsEnum;
 
 typedef enum {
 	tPulse100ms = 5999U,
 	tPulse500ms = 29999U,
-	tPulse = 2999U
+	tPulse550ms = 2999U
 }PulseSettingsEnum;
 
 void libPWMInit (void);

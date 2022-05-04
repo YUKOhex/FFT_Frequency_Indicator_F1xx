@@ -96,6 +96,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
   libADCInit();
   libFFTInit();
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
