@@ -14,19 +14,24 @@ void PWMStart (void) {
 	HAL_TIM_PWM_Start_IT(&PWM_HTIM, PWM_CHANEL);
 }
 
-void libPWMmain (void) {
+void libPWMmainLEDBlink (void) {
+	PeriodSettings LedSettings = tZero;
+
 	PeriodElapsedHandler ();
-	PeriodSettings LedSettings = FrequencyParser (&FrequencyDetectorData);
-	if (FlagOffTimer == true && LedSettings != tZero){
-		PWMTimerSetup (LedSettings);
-		PWMStart();
+	if (FlagOffTimer == true){
+		LedSettings = FrequencyParser (&FrequencyDetectorData);
+		if (LedSettings != tZero){
+			MeasurementsClear(&FrequencyDetectorData);
+			PWMTimerSetup (LedSettings);
+			PWMStart();
+		}
 	}
-	MeasurementsClear(&FrequencyDetectorData);
 }
 
 static PeriodSettings FrequencyParser (FrequencyStruct * frequency) {
 	const uint16_t frequencyDetectionThreshold = 1;
 	PeriodSettings parser = tZero;
+
 	if ((frequency->Hz1000 >= frequencyDetectionThreshold) && (frequency->Hz500 >= frequencyDetectionThreshold))
 		parser = t550ms_F500_F1000;
 	else if (frequency->Hz1000 >= frequencyDetectionThreshold)
@@ -42,7 +47,6 @@ static void PWMTimerSetup (PeriodSettings settings){
 			__HAL_TIM_SET_AUTORELOAD (&PWM_HTIM, t200ms_F500);
 			__HAL_TIM_SET_COMPARE (&PWM_HTIM, PWM_CHANEL, t200ms_Pulse100ms);
 			break;
-
 		case t1000ms_F1000:
 			__HAL_TIM_SET_AUTORELOAD (&PWM_HTIM, t1000ms_F1000);
 			__HAL_TIM_SET_COMPARE (&PWM_HTIM, PWM_CHANEL, t1000ms_Pulse500ms);
@@ -69,10 +73,8 @@ static void PeriodElapsedHandler (void) {
 }
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
-	if (htim->Instance == PWM_HTIM.Instance){
+	if (htim->Instance == PWM_HTIM.Instance)
 		FlagPeriodElapsed = true;
-	}
-
 }
 
 void HAL_TIM_PWM_PulseFinishedCallback (TIM_HandleTypeDef *htim){

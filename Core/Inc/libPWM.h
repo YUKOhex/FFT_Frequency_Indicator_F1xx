@@ -15,12 +15,12 @@ typedef enum {
 	tZero = 0U
 }PeriodSettings;
 
- enum PulseSettingsEnum {
+enum PulseSettingsEnum {
 	 t200ms_Pulse100ms = 5999U,
 	 t1000ms_Pulse500ms = 29999U,
 	 t550ms_Pulse50ms = 2999U
 };
 
-void libPWMmain (void);
+void libPWMmainLEDBlink (void);
 
 #endif

@@ -105,7 +105,7 @@ int main(void)
   {
 	libADCMain();
 	libFFTmain (&FFT_data);
-	libPWMmain();
+	libPWMmainLEDBlink();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

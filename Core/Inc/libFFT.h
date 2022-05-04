@@ -16,19 +16,31 @@
 
 #ifdef FFT_256_NPT
 	#define NPT 256
+
+ //Init.Period = 8999;
 	enum PositioinFrequency{
 		position500Hz = 16U,
 		position1000Hz = 32U
 	};
 
 	enum FrequencyDetectionLevel {
-		Detect500Hz = 50U,
+		Detect500Hz = 55U,
 		Detect1000Hz = 45U
 	};
 #endif
 
 #ifdef FFT_64_NPT
 	#define NPT 64
+
+	enum PositioinFrequency{
+		position500Hz = ,
+		position1000Hz =
+	};
+
+	enum FrequencyDetectionLevel {
+		Detect500Hz = ,
+		Detect1000Hz =
+	};
 #endif
 
 typedef struct {

@@ -4,8 +4,10 @@
 #include "dma.h"
 #include "libFFT.h"
 #include "string.h"
-bool DMAflag = false; //
-uint16_t ADCDMABuff [NPT];
+
+static bool DMAflag = false;
+static uint16_t ADCDMABuff [NPT];
+
 void libADCInit (void) {
 	HAL_TIM_Base_Start(&HTIM);
 	HAL_ADC_Start_DMA(&HADC,(uint32_t*) &ADCDMABuff, NPT*2);
@@ -21,7 +23,6 @@ void libADCMain (void){
 			FFT_data.UpdateFlag = true;
 		}
 	}
-
 }
 
 void DMA_IRQHandler (void) {  //extern _it.c DMAx_Channelx_IRQHandler

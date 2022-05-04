@@ -10,7 +10,7 @@ FrequencyStruct FrequencyDetectorData;
 	static const uint16_t startFrequency = 18;
 	static const uint16_t finishFrequency = NPT / 2;
 	int32_t SignalSimulation [NPT];
-	static inline void For_FFT_SignalSimulation(int32_t *arr, float Fd);
+	static void For_FFT_SignalSimulation(int32_t *arr, float Fd);
 	static void SinusSignalParametr (FFT_InitStruct *data);
 	static SearchSinusStruct SearchSinusMaxMagnitude (uint32_t *data);
 	static void Norm (uint32_t *data);
@@ -74,7 +74,7 @@ void MeasurementsClear (FrequencyStruct *DataFrequency){
 }
 
 #ifdef DEBUG_FFT
-static inline void For_FFT_SignalSimulation(int32_t *arr, float Fd)
+static void For_FFT_SignalSimulation(int32_t *arr, float Fd)
 {
     float fx;
     for( uint16_t i = 0; i < NPT; i++)
