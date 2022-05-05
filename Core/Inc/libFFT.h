@@ -6,9 +6,14 @@
 
 //#define DEBUG_FFT
 
-//#define FFT_1024_NPT
-#define FFT_256_NPT
-//#define FFT_64_NPT
+
+/*choose one of the options that have been implemented*/
+
+//#define FFT_1024_NPT // unrealized
+//#define FFT_256_NPT // implemented
+#define FFT_64_NPT // implemented
+
+/******************************************************/
 
 #ifdef FFT_1024_NPT
 	#define NPT 1024
@@ -16,8 +21,8 @@
 
 #ifdef FFT_256_NPT
 	#define NPT 256
+	#define PERIOD_TIM3_INIT 8999U
 
- //Init.Period = 8999;
 	enum PositioinFrequency{
 		position500Hz = 16U,
 		position1000Hz = 32U
@@ -31,15 +36,16 @@
 
 #ifdef FFT_64_NPT
 	#define NPT 64
+	#define PERIOD_TIM3_INIT 11999U
 
 	enum PositioinFrequency{
-		position500Hz = ,
-		position1000Hz =
+		position500Hz = 5U,
+		position1000Hz = 11U
 	};
 
 	enum FrequencyDetectionLevel {
-		Detect500Hz = ,
-		Detect1000Hz =
+		Detect500Hz = 65,
+		Detect1000Hz = 70U
 	};
 #endif
 

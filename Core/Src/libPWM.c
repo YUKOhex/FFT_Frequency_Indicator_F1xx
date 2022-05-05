@@ -9,20 +9,20 @@ static PeriodSettings FrequencyParser (FrequencyStruct * frequency);
 static void PWMTimerSetup (PeriodSettings settings);
 static void PeriodElapsedHandler (void);
 
-void PWMStart (void) {
+static void PWMStart (void) {
 	HAL_TIM_Base_Start_IT(&PWM_HTIM);
 	HAL_TIM_PWM_Start_IT(&PWM_HTIM, PWM_CHANEL);
 }
 
-void libPWMmainLEDBlink (void) {
+void libPWMmainLEDBlink (void) { // Implementation of software PWM to control the LED
 	PeriodSettings LedSettings = tZero;
 
-	PeriodElapsedHandler ();
+	PeriodElapsedHandler (); // Processing by the flag from the interrupt
 	if (FlagOffTimer == true){
-		LedSettings = FrequencyParser (&FrequencyDetectorData);
+		LedSettings = FrequencyParser (&FrequencyDetectorData); // Returns the PWM settings according to the detected frequencies
 		if (LedSettings != tZero){
-			MeasurementsClear(&FrequencyDetectorData);
-			PWMTimerSetup (LedSettings);
+			MeasurementsClear(&FrequencyDetectorData); // Clear measurement results
+			PWMTimerSetup (LedSettings); // enter settings in the timer
 			PWMStart();
 		}
 	}

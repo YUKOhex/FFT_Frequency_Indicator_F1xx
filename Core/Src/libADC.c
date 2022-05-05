@@ -15,12 +15,12 @@ void libADCInit (void) {
 
 void libADCMain (void){
 	if (DMAflag == true){
-		if (FFT_data.UpdateFlag == false){
+		if (FFT_data.UpdateFlag == false){	// If the data is processed
 			for (uint16_t i = 0; i < NPT; i++)
-				FFT_data.InArray [i] = ADCDMABuff [i];
+				FFT_data.InArray [i] = ADCDMABuff [i];	// copy buff
 			HAL_ADC_Start_DMA(&HADC,(uint32_t*) &ADCDMABuff, NPT*2);
 			DMAflag = false;
-			FFT_data.UpdateFlag = true;
+			FFT_data.UpdateFlag = true; // New data received for processing
 		}
 	}
 }

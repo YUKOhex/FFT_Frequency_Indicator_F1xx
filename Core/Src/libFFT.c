@@ -2,8 +2,8 @@
 #include "stm32_dsp.h"
 #include "math.h"
 
-FFT_InitStruct FFT_data;
-FrequencyStruct FrequencyDetectorData;
+FFT_InitStruct FFT_data; //structure for calculating the fast Fourier transform
+FrequencyStruct FrequencyDetectorData; // structure for storage of detected frequencies
 
 #ifdef DEBUG_FFT
 	SearchSinusStruct foundSinusMax;
@@ -33,9 +33,9 @@ void libFFTmain (FFT_InitStruct *data) {
 		#elif NPT == 64
 			cr4_fft_64_stm32(data->OutArray, data->InArray, NPT);
 		#endif
-		CalcPowerMag (data);
-		FrequencyDetector (data->MagArray, &FrequencyDetectorData);
-		data->UpdateFlag = false;
+		CalcPowerMag (data); //magnitude calculation
+		FrequencyDetector (data->MagArray, &FrequencyDetectorData); // Detecting frequencies in 500Hz and 1000 Hz
+		data->UpdateFlag = false; //The data is processed
 	}
 }
 
@@ -61,7 +61,7 @@ static void FrequencyDetector (uint32_t *data, FrequencyStruct *Frequency) {
 	if (data [position1000Hz] > Detect1000Hz)
 		Frequency->Hz1000++;
 #ifdef DEBUG_FFT
-	DataFrequency->cycleCounter++;
+		Frequency->cycleCounter++;
 #endif
 }
 

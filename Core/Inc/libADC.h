@@ -5,7 +5,7 @@
 #include "main.h"
 #include "stdbool.h"
 
-#define HTIM htim3
+#define HTIM htim3 //timer to generate the sampling rate
 #define HADC hadc1
 
 void libADCInit (void);
